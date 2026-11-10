@@ -9,7 +9,7 @@ REFUSED_CODES = {errno.ECONNREFUSED, 10061}
 def validate_target(raw_target):
     """Return raw_target as an ipaddress string if it is a valid IPv4 address, else raise ValueError."""
     raw_target = raw_target.strip()  # Remove whitespace from the input
-
+    # Validate the target as an IPv4 address
     try:
         target = ipaddress.IPv4Address(raw_target)
     except ValueError:
@@ -34,6 +34,7 @@ def validate_port(raw_port):
 def parse_port_range(text):
     """Parse a port range string like '20-80' and return the start and end ports as integers."""
     pieces = text.split("-")
+    # Split the input text by the hyphen to separate start and end ports
     if len(pieces) == 1:
         start = end = validate_port(pieces[0])
     elif len(pieces) == 2:
@@ -46,6 +47,7 @@ def parse_port_range(text):
     return start, end
 
 def scan_port(target, port, timeout = 4):
+    """Attempt a TCP connection to the target port and return its status."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:   # Creates an IPv4 TCP socket
         client.settimeout(timeout)  # Timeout to prevent waiting
         # Attempt TCP connection (returns 0 on success instead of raising an error)
